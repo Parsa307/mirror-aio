@@ -1,0 +1,38 @@
+name: Mirror AIO
+
+on:
+  workflow_dispatch:
+    inputs:
+      GITHUB_REPO:
+        description: 'GITHUB_REPO'
+        required: true
+        default: 'filterlists'
+      GITHUB_USER:
+        description: 'GITHUB_USER'
+        required: true
+        default: 'Parsa307'
+      MIRROR_USER:
+        description: 'MIRROR_USER'
+        required: true
+        default: 'Parsast'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          repository: ${{ github.event.inputs.GITHUB_USER }}/${{ github.event.inputs.GITHUB_REPO }}
+
+      - name: Push to Codeberg
+        run: |
+          git remote add codeberg https://${{ github.event.inputs.MIRROR_USER }}:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/${{ github.event.inputs.MIRROR_USER }}/${{ github.event.inputs.GITHUB_REPO }}.git
+          git push --prune codeberg 'refs/heads/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
+
+      - name: Push to GitLab
+        run: |
+          git remote add gitlab https://${{ github.event.inputs.MIRROR_USER }}:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${{ github.event.inputs.MIRROR_USER }}/${{ github.event.inputs.GITHUB_REPO }}.git
+          git push --prune gitlab 'refs/heads/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
