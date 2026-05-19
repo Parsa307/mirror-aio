@@ -32,6 +32,11 @@ jobs:
           git remote add codeberg https://${{ github.event.inputs.MIRROR_USER }}:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/${{ github.event.inputs.MIRROR_USER }}/${{ github.event.inputs.GITHUB_REPO }}.git
           git push --prune codeberg 'refs/heads/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
 
+      - name: Push to Gitea
+        run: |
+          git remote add gitea https://${{ github.event.inputs.MIRROR_USER }}:${{ secrets.GITEA_TOKEN }}@gitea.com/${{ github.event.inputs.MIRROR_USER }}/${{ github.event.inputs.GITHUB_REPO }}.git
+          git push --prune gitea 'refs/heads/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
+
       - name: Push to GitLab
         run: |
           git remote add gitlab https://${{ github.event.inputs.MIRROR_USER }}:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${{ github.event.inputs.MIRROR_USER }}/${{ github.event.inputs.GITHUB_REPO }}.git
